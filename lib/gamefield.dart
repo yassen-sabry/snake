@@ -19,20 +19,38 @@ class _GameFieldState extends State<GameField> {
   List<Offset> _positions=[];
   double? height;
   double? widht;
+  Timer ? timer;
+  double? speed=4;
+  int _score=0;
+  Offset? foodPosition;
+
+  Widget food = Container();
 
   @override
+  //TODO build
   Widget build(BuildContext context) {
-    Timer.periodic(Duration(milliseconds: 500), (timer) {
-      setState(() {
-
-      });
-    });
+    changespeed();
     height=MediaQuery.of(context).size.height;
     widht=MediaQuery.of(context).size.width;
     return Scaffold(
       body: Stack(
-        children: snakePieces(),
+        children: [
+          Stack(
+            children: snakePieces(),
+          ),score(),food
+        ],
       ));
+  }
+
+  //TODO score
+  Positioned score() => Positioned(top: 50, right: 50, child: Text('$_score', style: TextStyle(fontSize: 22, ),),);
+
+  //TODO speed
+  changespeed(){
+    if(timer!=null)if(timer!.isActive) timer!.cancel();
+    timer = Timer.periodic(Duration(milliseconds: 500~/speed!), (timer) {
+      setState(() {});
+    });
   }
 
   //TODO snake pieces
@@ -49,6 +67,11 @@ class _GameFieldState extends State<GameField> {
    return pieces;
   }
 
+  foodDraw(){
+    if(foodPosition==null){};
+  }
+
+  //TODO draw
   draw(){
     if(_positions.length==0){
       _positions.add(getRamdomPositionWithSreen());
@@ -72,14 +95,16 @@ checkBorder(position);
     return nextPosition;
   }
 
+  //TODO check border
 checkBorder(Offset position){
-    if(position.dy>=height!-30) position=Offset(position.dx, 1);
-      if(position.dy<=0) position=Offset(position.dx, height!-1);
-    if(position.dx>=widht!-30) position=Offset(1, position.dy);
-      if(position.dx<=0) position=Offset(height!-1, position.dy);
+    if(position.dy>=height!-30) position=Offset(position.dx, 16);
+      if(position.dy<=0) position=Offset(position.dx, height!-16);
+    if(position.dx>=widht!-30) position=Offset(16, position.dy);
+      if(position.dx<=0) position=Offset(height!-16, position.dy);
     return position;
 }
 
+  //TODO getramdomposition
   Offset getRamdomPositionWithSreen(){
     Random rand = Random();
     double x=rand.nextInt(widht!.toInt()).toDouble();
